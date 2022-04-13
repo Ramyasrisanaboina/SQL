@@ -1,0 +1,174 @@
+SQL> select *from sailors where rating>7;
+
+       SID SNAME                    RATING        AGE
+---------- -------------------- ---------- ----------
+        31 lubber                        8       55.5
+        32 andy                          8       25.5
+        71 zobra                        10         16
+        74 ravi                          9         35
+        58 rusty                        10         35
+        
+SQL> select *from sailors s,reserves r where s.sid=r.sid and r.bid=103;
+
+       SID SNAME                    RATING        AGE        SID        BID
+---------- -------------------- ---------- ---------- ---------- ----------
+RDATE
+---------
+        22 dustin                        7         45         22        103
+10-AUG-98
+
+        31 lubber                        8       55.5         31        103
+11-JUN-98
+
+        74 ravi                          9         35         74        103
+09-AUG-98
+*age of sailors whose name begins and ends with b and has atleast 3 characters
+SQL> select s.age from sailors s where s.sname like 'b_%b';
+
+       AGE
+----------
+        63
+*name of sailors who have reserved atleast one boat
+ SQL> select s.sname from sailors s,reserves r where s.sid=r.sid;
+
+SNAME
+--------------------
+dustin
+dustin
+dustin
+dustin
+lubber
+lubber
+lubber
+horatio
+horatio
+ravi
+*sid of sailors who have reserved a red boat
+SQL> select r.sid from reserves r,boats b where b.bid=r.bid and b.bcolor='red';
+
+       SID
+----------
+        22
+        22
+        31
+        31
+        64
+        
+*sid of sailors who have reserved a green boat
+
+SQL> select r.sid from reserves r,boats b where b.bid=r.bid and b.bcolor='green';
+
+       SID
+----------
+        22
+        31
+        74
+*find the colour of boat reserved by lubber
+
+SQL> select b.bcolor from sailors s,boats b,reserves r where s.sid=r.sid and b.bid=r.bid and s.sname
+='lubber';
+
+BCOLOR
+--------------------
+red
+green
+red
+*names of sailors who reserved a red boat.
+SQL> select s.sname from sailors s,boats b,reserves r where s.sid=r.sid and b.bid=r.bid and b.bcolor
+='red';
+
+SNAME
+--------------------
+dustin
+dustin
+lubber
+lubber
+horatio
+*names of sailors who reserved a green boat.
+SQL> select s.sname from sailors s,boats b,reserves r where s.sid=r.sid and b.bid=r.bid and b.bcolor
+='green';
+
+SNAME
+--------------------
+dustin
+lubber
+ravi
+*names of sailors who reservd red or green boat.
+
+SQL> select s.sname from sailors s,boats b,reserves r where s.sid=r.sid and b.bid=r.bid and b.bcolor
+='red'
+  2   union
+  3  select s1.sname from sailors s1,boats b1,reserves r1 where s1.sid=r1.sid and b1.bid=r1.bid and 
+b1.bcolor='green';
+
+SNAME
+--------------------
+dustin
+horatio
+lubber
+ravi
+*names of sailors who reservd red or green boat with duplicates.
+SQL> select s.sname from sailors s,boats b,reserves r where s.sid=r.sid and b.bid=r.bid and b.bcolor
+='red' union all
+  2  select s1.sname from sailors s1,boats b1,reserves r1 where s1.sid=r1.sid and b1.bid=r1.bid and 
+b1.bcolor='green';
+
+SNAME
+--------------------
+dustin
+dustin
+lubber
+lubber
+horatio
+dustin
+lubber
+ravi
+**names of sailors who reservd red or green boat without using union or union all
+SQL> select s.sname from sailors s,reserves r,boats b where s.sid=r.sid and b.bid=r.bid and (b.bcolo
+r='red' or b.bcolor='green');
+
+SNAME
+--------------------
+dustin
+dustin
+dustin
+lubber
+lubber
+lubber
+horatio
+ravi
+
+*names of sailors who reserved both red and green.
+SQL> select s.sname from sailors s,boats b,reserves r where s.sid=r.sid and b.bid=r.bid and b.bcolor
+='red' intersect select s1.sname from sailors s1,boats b1,reserves r1 where s1.sid=r1.sid and b1.bid
+=r1.bid and b1.bcolor='green';
+
+SNAME
+--------------------
+dustin
+lubber
+
+**names of sailors who reserved both red and green without intersect
+SQL>  select s.sname from sailors s ,boats b,reserves r,boats b1,reserves r1 where s.sid=r.sid and s
+.sid=r1.sid and b1.bid=r1.bid and b.bid=r.bid and b.bcolor='red' and b1.bcolor='green';
+
+SNAME
+--------------------
+dustin
+dustin
+lubber
+lubber
+
+*names of sailors who reserved a red boat but not a green boat.
+SQL>  select s.sname from sailors s,boats b,reserves r where s.sid=r.sid and b.bid=r.bid and b.bcolo
+r='red'
+  2  minus
+  3   select s1.sname from sailors s1,boats b1,reserves r1 where s1.sid=r1.sid and b1.bid=r1.bid and
+ b1.bcolor='green';
+
+SNAME
+--------------------
+horatio
+
+
+
