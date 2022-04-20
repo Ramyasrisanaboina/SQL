@@ -1,0 +1,126 @@
+*name of sailors who have not reserved a red boat.
+
+SQL> select s.sname from sailors s where s.sid NOT IN(select r.sid from reserves r where r.bid IN(se
+lect b.bid from boats b where b.bcolor='red'));
+
+SNAME
+--------------------
+brutus
+andy
+zobra
+ravi
+art
+bob
+rusty
+
+corelated queries
+~~~~~~~~~~~~~~~~~
+*name of sailors who have reserved boat 103.
+SQL> select s.sname from sailors s 
+  2  where exists(select * from reserves r where s.sid=r.sid and r.bid=103);
+
+SNAME
+--------------------
+dustin
+lubber
+ravi
+
+*name of sailors who have not reserved boat 103.
+SQL>  select s.sname from sailors s where not  exists(select * from reserves r where s.sid=r.sid and
+ r.bid=103);
+
+SNAME
+--------------------
+brutus
+andy
+rusty
+horatio
+zobra
+art
+bob
+
+*count of how many distinct rating of sailors less than 40 years age.
+SQL> select count(distinct s.rating)from sailors s where s.age<40;
+
+COUNT(DISTINCTS.RATING)
+-----------------------
+                      6
+                   
+ *count of reservations were made by sailors less than 40 years.
+ SQL> select count(*) from sailors s,reserves r where s.sid=r.sid and s.age<40;
+
+  COUNT(*)
+----------
+         3
+       
+ *boat id not reserved by sailor with sid=64.
+ SQL> select b.bid from boats b MINUS(select r.bid from reserves r where r.sid=64);
+
+       BID
+----------
+       103
+       104
+    
+ *names of sailors with highest rating.
+ SQL>  select s.sname from sailors s where s.rating>= all(select s1.rating from sailors s1);
+
+SNAME
+--------------------
+zobra
+rusty
+
+or
+
+SQL> select s.sname from sailors s where s.rating = (select max(s1.rating) from sailors s1);
+
+SNAME
+--------------------
+zobra
+rusty
+
+name of saiors who have reserved both red and green boats using in operator.
+SQL> select s.sname from sailors s,reserves r,boats b where s.sid=r.sid and r.bid=b.bid and b.bcolor
+='red' and s.sid in(select r1.sid from sailors s1,reserves r1,boats b1 where s1.sid=r1.sid and r1.bi
+d=b1.bid and b1.bcolor='green');
+
+SNAME
+--------------------
+dustin
+dustin
+lubber
+lubber
+
+*name of sailors who reserved a red boat but not a green boat using not in.
+SQL> select s.sname from sailors s,reserves r,boats b where s.sid=r.sid and r.bid=b.bid and b.bcolor
+='red' and s.sid not in(select r1.sid from sailors s1,reserves r1,boats b1 where s1.sid=r1.sid and r1.bid=b1.bid and b1.bcolor='green');
+
+SNAME
+--------------------
+horatio
+
+*display details of first five rows .
+SQL> select *from sailors where rownum<=5;
+
+       SID SNAME                    RATING        AGE
+---------- -------------------- ---------- ----------
+        22 dustin                        7         45
+        29 brutus                        1         33
+        31 lubber                        8       55.5
+        32 andy                          8       25.5
+        64 horatio                       7         35
+
+*display last five rows.
+
+SQL> select *from sailors
+  2  minus
+  3  select *from sailors where rownum<=5;
+
+       SID SNAME                    RATING        AGE
+---------- -------------------- ---------- ----------
+        58 rusty                        10         35
+        71 zobra                        10         16
+        74 ravi                          9         35
+        85 art                           3         25
+        95 bob                           3         63
+        
+
