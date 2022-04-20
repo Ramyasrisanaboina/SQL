@@ -1,0 +1,60 @@
+SQL> create table company
+  2  {
+  3  
+SQL> create table company
+  2  (
+  3   companyn varchar2(20),
+  4  amount integer
+  5  );
+
+Table created.
+
+SQL>  insert into company values('wipro',5000);
+
+1 row created.
+
+SQL>  insert into company values('ibm',8000);
+
+1 row created.
+
+SQL>  insert into company values('dell',9000);
+
+1 row created.
+
+SQL>  insert into company values('wipro',2000);
+
+1 row created.
+
+SQL>  insert into company values('dell',10000);
+
+1 row created.
+
+SQL> select *from company;
+
+COMPANYN                 AMOUNT
+-------------------- ----------
+wipro                      5000
+ibm                        8000
+dell                       9000
+wipro                      2000
+dell                      10000
+
+*sum of amount of each company
+SQL> select companyn,sum(amount) from company 
+  2  group by companyn;
+
+COMPANYN             SUM(AMOUNT)
+-------------------- -----------
+wipro                       7000
+dell                       19000
+ibm                         8000
+
+*count no of rows of each company.
+SQL> select companyn,count(*) from company group by companyn;
+
+COMPANYN               COUNT(*)
+-------------------- ----------
+wipro                         2
+dell                          2
+ibm                           1
+
