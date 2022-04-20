@@ -1,0 +1,39 @@
+*names of sailors who have reserved boat no 103.
+SQL> select s.sname from sailors s where s.sid in(select r.sid from reserves r where r.bid=103);
+
+SNAME
+--------------------
+dustin
+lubber
+*names of sailors who have not reserved boat no 103.
+SQL> select s.sname from sailors s where s.sid not in(select r.sid from reserves r where r.bid=103);
+
+
+SNAME
+--------------------
+brutus
+andy
+horatio
+zobra
+art
+bob
+rusty
+
+*names of sailors who have highest rating
+SQL> select s.sname from sailors s where s.rating >= all(select s1.rating from sailors s1);
+
+SNAME
+--------------------
+zobra
+rusty
+*name of sailors whose rating is betterthan horatio.
+SQL> select s.sname from sailors s
+  2  where s.rating > ANY(select s1.rating from sailors s1 where s1.sname='horatio');
+
+SNAME
+--------------------
+zobra
+rusty
+ravi
+lubber
+andy
